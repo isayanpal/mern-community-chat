@@ -37,12 +37,14 @@ router.post("/login", async (req, res) => {
 });
 
 // ! Get all users
-router.get("/register", async (req, res) => {
+router.get("/user", async (req, res) => {
   try {
-    const users = await User.find();
-    res.status(201).json(users);
+    const token = req.headers.authorization.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.userId);
+    res.json({ userId: user._id, username: user.username });
   } catch (error) {
-    res.status(500).json({ error: "Unable to get users" });
+    res.status(401).json({ error: "Unauthorized" });
   }
 });
 

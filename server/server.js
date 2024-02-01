@@ -8,6 +8,7 @@ const bodyParser = require("body-parser");
 const http = require("http");
 const socketIo = require("socket.io");
 const Message = require("./models/Message");
+const authRoutes = require("./routes/auth");
 
 const app = express();
 const server = http.createServer(app);
@@ -41,6 +42,8 @@ io.on("connection", (socket) => {
     io.emit("chat message", msg);
   });
 });
+
+app.use("/", authRoutes);
 
 app.listen(PORT, () =>
   console.log(`Server started on port ${PORT}`.yellow.bold)
